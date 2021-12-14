@@ -23,6 +23,9 @@ namespace Laba_8.Pages
         By buttonToPushTransaction = By.XPath("//button[@class='button button--success button--spaced call-btn section-deal__button']");
         By elementsInHistoryList = By.XPath("//div[@class='trades__list']/div[@class='trades-list__item trades-list-item trades-list-item__close']");
         By currectStock = By.XPath("//div[@class='section-deal']/div[@class='section-deal__name']");
+        By chooseStockButton = By.XPath("//button[@class='asset-select__button']");
+        By chooseStockInput = By.XPath("//input[@class='asset-select__search-input']");
+        By listOfChooseStock = By.XPath("//div[@class='assets-table']/div[@class='assets-table__item']");
 
         public MainPage(WebDriver webDriver)
         {
@@ -99,10 +102,49 @@ namespace Laba_8.Pages
                 .ToList();
         }
 
+        public string GetValueFromTimeInTransaction()
+        {
+            return new WebDriverWait(this.webDriver, TimeSpan.FromSeconds(3))
+                .Until(webDriver => webDriver.FindElement(inputOfTime)).GetAttribute("value").Trim();
+        }
+
+        public string GetValueFromCostInTransaction()
+        {
+            return new WebDriverWait(this.webDriver, TimeSpan.FromSeconds(3))
+                .Until(webDriver => webDriver.FindElement(inputOfCost)).GetAttribute("value").Trim().Split(" ")[0];
+        }
+
         public string GetCurrectNameOfStock()
         {
             return new WebDriverWait(webDriver, TimeSpan.FromSeconds(3))
                     .Until(webDriver => webDriver.FindElement(currectStock)).Text;
+        }
+
+        public MainPage ClickToChooseStockButton()
+        {
+            new WebDriverWait(webDriver, TimeSpan.FromSeconds(3))
+                    .Until(webDriver => webDriver.FindElement(chooseStockButton))
+                    .Click();
+
+            return this;
+        }
+
+        public MainPage InputValueInInputOfChooseStock(string value)
+        {
+            IWebElement input = new WebDriverWait(webDriver, TimeSpan.FromSeconds(3))
+                    .Until(webDriver => webDriver.FindElement(chooseStockInput));
+            input.Clear();
+            input.SendKeys(value);
+
+            return this;
+        }
+
+        public MainPage ClickToChooseStockItem()
+        {
+            new WebDriverWait(webDriver, TimeSpan.FromSeconds(3))
+                    .Until(webDriver => webDriver.FindElements(listOfChooseStock))[0].FindElement(By.ClassName("assets-table__name")).Click();
+
+            return this;
         }
     }
 }

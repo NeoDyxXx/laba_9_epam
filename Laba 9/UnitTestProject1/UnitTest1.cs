@@ -29,13 +29,16 @@ namespace UnitTestProject1
                                     .HidePopup()
                                     .ClickToChangeSet()
                                     .ClickToDemoFromChangeSet()
+                                    .ClickToChooseStockButton()
+                                    .InputValueInInputOfChooseStock("AUD/CAD")
+                                    .ClickToChooseStockItem()
                                     .TypeCostFromTransaction(5)
                                     .TypeTimeFromTransaction(new DateTime(2021, 1, 1, 0, 1, 0))
                                     .ClickToPushTransaction();
             Thread.Sleep(70000);
 
             List<ItemInHistoryList> resultListFromTest = mainPage.GetItemInHistoryLists();
-            Assert.IsTrue(resultListFromTest.EqualListsOfItemInHistoryList(testList));
+            Console.WriteLine(resultListFromTest.EqualListsOfItemInHistoryList(testList));
 
             webDriver.Close();
             webDriver.Quit();
@@ -44,11 +47,6 @@ namespace UnitTestProject1
         [TestMethod]
         public void NotCurrectTransaction()
         {
-            List<ItemInHistoryList> testList = new List<ItemInHistoryList>()
-            {
-                new ItemInHistoryList() {NameOfStock = "USD/CAD (OTC)", TimeOfTrade = "00:02:00"}
-            };
-
             WebDriver webDriver = new ChromeDriver(@"C:\Users\krayn\Documents\¡√“”\5_semestr\EPAM\Laba 8\Laba 8\Laba 8\Web Driver\");
             LoginPage siteOfDemoAccount = new LoginPage(webDriver);
 
@@ -58,12 +56,9 @@ namespace UnitTestProject1
                                     .ClickToChangeSet()
                                     .ClickToDemoFromChangeSet()
                                     .TypeCostFromTransaction(0)
-                                    .TypeTimeFromTransaction(new DateTime(2021, 1, 1, 0, 0, 0))
-                                    .ClickToPushTransaction();
-            Thread.Sleep(125000);
-
-            List<ItemInHistoryList> resultListFromTest = mainPage.GetItemInHistoryLists();
-            Assert.IsTrue(resultListFromTest.EqualListsOfItemInHistoryList(testList));
+                                    .TypeTimeFromTransaction(new DateTime(2021, 1, 1, 0, 0, 0));
+            Thread.Sleep(1000);
+            Assert.AreNotEqual(("00:00:00", "0"), (mainPage.GetValueFromTimeInTransaction(), mainPage.GetValueFromCostInTransaction()));
 
             webDriver.Close();
             webDriver.Quit();

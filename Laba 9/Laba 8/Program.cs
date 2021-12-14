@@ -6,6 +6,8 @@ using System.Threading;
 using Laba_8.Pages;
 using Laba_8.Another_Classes;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 namespace Laba_8
 {
@@ -13,28 +15,16 @@ namespace Laba_8
     {
         static void Main(string[] args)
         {
-            List<ItemInHistoryList> testList = new List<ItemInHistoryList>()
+            if (!Directory.Exists("Screenshots")) Directory.CreateDirectory("Screenshots");
+            if (Directory.GetFiles(@"Screenshots\").Length == 0)
+                File.Create(@"Screenshots\Screen_0.jpg");
+            else
             {
-                new ItemInHistoryList() {NameOfStock = "USD/CAD (OTC)", TimeOfTrade = "00:02:00"}
-            };
-
-            WebDriver webDriver = new ChromeDriver(@"C:\Users\krayn\Documents\БГТУ\5_semestr\EPAM\Laba 8\Laba 8\Laba 8\Web Driver\");
-            LoginPage siteOfDemoAccount = new LoginPage(webDriver);
-
-            MainPage mainPage = siteOfDemoAccount
-                                    .TransitionToDemoAccount()
-                                    .HidePopup()
-                                    .ClickToChangeSet()
-                                    .ClickToDemoFromChangeSet()
-                                    .TypeCostFromTransaction(0)
-                                    .TypeTimeFromTransaction(new DateTime(2021, 1, 1, 0, 0, 0))
-                                    .ClickToPushTransaction();
-            Thread.Sleep(125000);
-
-            List<ItemInHistoryList> resultListFromTest = mainPage.GetItemInHistoryLists();
-
-            webDriver.Close();
-            webDriver.Quit();
+                string fileName = @"Screenshots\Screen_" + System.Convert.ToString(
+                    Directory.GetFiles(@"Screenshots\").Select(item => System.Convert.ToInt32(item.Split('_')[1].Split(".")[0]))
+                    .OrderByDescending(item => item).First() + 1) + ".jpg";
+                File.Create(fileName);
+            }
         }
     }
 }
